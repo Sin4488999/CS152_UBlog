@@ -1,6 +1,6 @@
 {% extends "main_app/base.html" %} {% block title %} Blog Posts {% endblock %}
 {% load static %} {% block content %}
-<style>
+<!-- <style>
   .container-custom {
     background-image: url("{% static 'images/homeIMG.jpg' %}");
     background-size: 100% auto;
@@ -11,11 +11,10 @@
     align-items: center;
     justify-content: center;
   }
-</style>
+</style> -->
 
-<div class="container-custom">
+<!-- <div class="container-custom">
   <div class="card-body text-center">
-    <!-- <h5 class="card-title">Create a New Post</h5> -->
     <p class="card-text">What's on your mind?</p>
     <a
       href="{% if user.is_authenticated %} {% url 'addpostview' %} {% else %} {% url 'loginview' %} {% endif %}"
@@ -23,12 +22,12 @@
       >Create a New Post</a
     >
   </div>
-</div>
+</div> -->
 
-<div class="container">
+<!-- <div class="container">
   <div class="row">
     <div class="col-md-8 offset-md-2">
-      <!-- <h1 class="mt-4">Blog Posts</h1> -->
+      <h1 class="mt-4">Blog Posts</h1>
 
       <ul class="list-group">
         {% for post in posts %}
@@ -47,6 +46,61 @@
       </ul>
     </div>
   </div>
+</div> -->
+
+<div class="main-layout">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <h5>Communities</h5>
+    <a href="#">r/data</a>
+    <a href="#">r/design</a>
+    <a href="#">r/engineering</a>
+    <a href="#">r/product</a>
+    <a href="#">r/security</a>
+  </div>
+
+  <!-- CENTER FEED -->
+  <div class="feed-container">
+
+    <!-- FILTER BUTTONS (Hot / New / Top) -->
+    <div class="filter-tabs">
+      <button class="filter-btn active">Hot</button>
+      <button class="filter-btn">New</button>
+      <button class="filter-btn">Top</button>
+    </div>
+
+    <!-- POSTS -->
+    <ul class="list-group">
+      {% for post in posts %}
+      <li class="list-group-item">
+        <h2>{{ post.title }}</h2>
+        <small class="text-muted">{{ post.author }}</small>
+        <p>{{ post.content }}</p>
+        <a href="{% if user.is_authenticated %}{% url 'postdetailview' post.pk %}{% else %}{% url 'loginview' %}{% endif %}">
+          Read more →
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="right-box">
+    <h5>About</h5>
+    <p style="font-size:14px;">Prototype: votes/comments coming soon.</p>
+
+    <hr>
+
+    <h5>Actions</h5>
+    <a
+      href="{% if user.is_authenticated %}{% url 'addpostview' %}{% else %}{% url 'loginview' %}{% endif %}"
+      class="btn create-post-btn w-100"
+    >
+      Create Post
+    </a>
+  </div>
+
 </div>
 
 {% endblock %}

@@ -111,5 +111,128 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+    <style>
+      body {
+        background: #f8f9fa;
+        font-family: "Inter", sans-serif;
+      }
+
+      /* ===== TOP NAV ===== */
+      .navbar-custom {
+        background: #00c5ff !important;
+        border-bottom: 1px solid #009fcc;
+      }
+      .navbar-custom .nav-link,
+      .navbar-custom .navbar-brand {
+        color: white !important;
+        font-weight: 600;
+      }
+      #search-input {
+        border-radius: 20px;
+        padding-left: 15px;
+      }
+
+      /* ===== LAYOUT WRAPPER ===== */
+      .main-layout {
+        display: flex;
+        padding: 20px 40px;
+        margin-top: 10px;
+      }
+
+      /* ===== LEFT SIDEBAR ===== */
+      .sidebar {
+        width: 220px;
+        background: white;
+        padding: 20px;
+        height: fit-content;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+      }
+
+      .sidebar h5 {
+        font-size: 16px;
+        margin-bottom: 15px;
+        font-weight: 700;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 8px 0;
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .sidebar a:hover {
+        color: #00a2cc;
+      }
+
+      /* ===== FEED (CENTER CONTENT) ===== */
+      .feed-container {
+        flex-grow: 1;
+        margin: 0 30px;
+      }
+
+      /* HOT | NEW | TOP BUTTONS */
+      .filter-tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 15px;
+      }
+
+      .filter-btn {
+        padding: 5px 18px;
+        border-radius: 16px;
+        border: 1px solid #e0e0e0;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .filter-btn.active {
+        background: #e5faff;
+        border-color: #00c5ff;
+        color: #00a2cc;
+      }
+
+      /* ===== RIGHT SIDEBAR ===== */
+      .right-box {
+        width: 260px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        height: fit-content;
+        border: 1px solid #e0e0e0;
+      }
+
+      .right-box h5 {
+        font-weight: 700;
+        font-size: 16px;
+      }
+
+      /* ===== POST LIST ===== */
+      .list-group-item {
+        margin-bottom: 16px;
+        border-radius: 10px !important;
+        border: 1px solid #ddd;
+      }
+
+      .list-group-item:hover {
+        background: #fafafa;
+      }
+
+      .list-group-item h2 {
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .create-post-btn {
+        background: #5cb85c !important;
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-weight: 600;
+      }
+    </style>
   </body>
 </html>
