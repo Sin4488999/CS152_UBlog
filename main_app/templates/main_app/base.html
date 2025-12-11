@@ -58,7 +58,26 @@
             </li>
             {% endif %}
             <li>
-              
+              <form
+                class="form-inline my-2 my-lg-0"
+                method="get"
+                action="{% url 'search' %}"
+              >
+                <input
+                  class="form-control mr-sm-2"
+                  id="search-input"
+                  type="text"
+                  name="q"
+                  placeholder="Search..."
+                />
+                <button
+                  class="btn btn-outline-light my-2 my-sm-0"
+                  type="submit"
+                  style="font-family: 'Crimson Text'"
+                >
+                  Go
+                </button>
+              </form>
             </li>
           </ul>
         </div>
