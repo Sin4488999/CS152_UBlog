@@ -1,35 +1,56 @@
-{% extends "main_app/base.html" %} {% block title %} {{ custom_user.username }}
-{% endblock %} {% load static %} {% block content %}
-<div class="container mt-5">
-  <h2>User Profile</h2>
-  <hr />
+{# path: templates/main_app/profile.html #}
+{% extends "main_app/layouts/feed_base.html" %}
+{% load static %}
 
-  <div class="row">
-    <div class="col-md-6">
-      <h4>{{ custom_user.get_full_name }}</h4>
-      <p>Email: {{ custom_user.email }}</p>
-      <p>Username: {{ custom_user.username }}</p>
-      <p>Bio: {{ custom_user.profile.bio }}</p>
+{% block feed_title %}{{ custom_user.username }} • Profile{% endblock %}
+
+{% block feed_main %}
+  <div class="post-card profile-card">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        {{ custom_user.username|first|upper }}
+      </div>
+
+      <div class="profile-header-text">
+        <h2 class="profile-name">
+          {{ custom_user.get_full_name|default:custom_user.username }}
+        </h2>
+        <p class="profile-username">@{{ custom_user.username }}</p>
+        <p class="profile-email">{{ custom_user.email }}</p>
+      </div>
+    </div>
+
+    <div class="profile-bio">
+      <h3 class="profile-section-title">Bio</h3>
+      <p>
+        {{ custom_user.profile.bio|default:"This user hasn't written a bio yet." }}
+      </p>
+    </div>
+
+    <div class="profile-history">
+      <h3 class="profile-section-title">History</h3>
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <span class="profile-stat-label">Posts</span>
+          <span class="profile-stat-value">{{ post_count }}</span>
+        </div>
+        <div class="profile-stat">
+          <span class="profile-stat-label">Likes</span>
+          <span class="profile-stat-value">{{ like_count }}</span>
+        </div>
+        <div class="profile-stat">
+          <span class="profile-stat-label">Comments</span>
+          <span class="profile-stat-value">{{ comment_count }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <a href="{% url 'updateprofileview' custom_user.id %}"
+         class="btn btn-primary">
+        Update Profile
+      </a>
     </div>
   </div>
-
-  <hr />
-
-  <h3>History</h3>
-  <p>Total Posts: {{ post_count }}</p>
-  <p>Total Likes: {{ like_count }}</p>
-  <p>Total Comments: {{ comment_count }}</p>
-
-  <hr />
-
-  <!-- Add more fields as needed -->
-
-  <div class="mt-3">
-    <a
-      href="{% url 'updateprofileview' custom_user.id %}"
-      class="btn btn-primary" style="background-color: #00CCFF !important;"
-      >Update Profile</a
-    >
-  </div>
-</div>
 {% endblock %}
+

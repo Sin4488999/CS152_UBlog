@@ -10,10 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from django.conf import settings
+
 import pymysql
 pymysql.install_as_MySQLdb()
 from pathlib import Path
 import os
+
+from dotenv import load_dotenv  # NEW
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,8 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r4tdwj)qnp0#lzg&7_^t1t$0umm1&b@+9hm$k%***#-kazm-h6'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise RuntimeError("DJANGO_SECRET_KEY is not set in the environment/.env file")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -127,9 +133,43 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'main_app' / 'static',
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'main_app.CustomUser'
+
+# Email / SMTP configuration for Gmail
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Dummy Gmail account you created
+EMAIL_HOST_USER = os.environ.get('UBLOG_EMAIL')
+
+# Store the 16-character app password in an environment variable
+EMAIL_HOST_PASSWORD = os.environ.get("UBLOG_EMAIL_APP_PWD")
+
+# What users see as the sender
+DEFAULT_FROM_EMAIL = f"UBlog <{EMAIL_HOST_USER}>"
+
+#Redirect Behavior
+LOGIN_REDIRECT_URL = 'postlistview'   # fallback after login
+LOGOUT_REDIRECT_URL = 'homeview'      # send logged-out users to landing
+LOGIN_URL = 'loginview'               # for @login_required
+
+#Timeout for tokens
+PASSWORD_RESET_TIMEOUT = 15 * 60
+
+#Verification resend cooldown
+UBLOG_VERIFICATION_RESEND_COOLDOWN = 300
+
+# helper to purge unverified accounts (7 days)
+
+

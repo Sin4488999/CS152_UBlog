@@ -1,0 +1,158 @@
+{% extends "main_app/layouts/base.html" %}
+{% load static %}
+{% block title %}UBlog{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{% static 'css/landingpage.css' %}">
+  <style>
+    /* Landing page: footer starts fully hidden and is revealed via scroll progress. */
+    :root{ --footer-p: 0; }
+  </style>
+{% endblock %}
+
+{% block page_flags %}
+  <!-- Flip true/false here to enable/disable the overlay for this page -->
+  <script>window.UBLOG = { DEBUG_OVERLAY: true };</script>
+{% endblock %}
+
+{% block content %}
+<div class="landing-stage">
+  <div class="landing-frame">
+
+    <section class="splash-hero">
+      <div class="logo-container">
+        <div class="logo-core">
+          <div class="logo-u">U</div>
+          <div class="logo-blog-bubble"><div class="logo-blog">BLOG</div></div>
+        </div>
+        <div class="logo-tagline"><span>Create</span><span>Discover</span><span>Share</span></div>
+      </div>
+
+      <div class="scroll-hint" aria-hidden="true">
+        <span class="scroll-hint-label">Scroll</span>
+        <span class="scroll-hint-icon">▾</span>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="row justify-content-center">
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+          <div class="feature-card text-center">
+            <h4>Create</h4>
+            <p>Write articles effortlessly with a clean, distraction-free editor built for creativity.</p>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+          <div class="feature-card text-center">
+            <h4>Discover</h4>
+            <p>Explore diverse voices and uncover unique perspectives from authors worldwide.</p>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center mb-4">
+          <div class="feature-card text-center">
+            <h4>Engage</h4>
+            <p>Join discussions, leave feedback, and build genuine connections through writing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h5>Ready to start your journey?</h5>
+      <div class="cta-actions">
+        <a href="{% url 'signupview' %}" class="btn btn-primary" style="background-color:#00CCFF!important;">Join UBlog</a>
+        <a href="{% url 'postlistview' %}" class="btn btn-outline-primary cta-guest-btn">Browse as Guest</a>
+      </div>
+      <p class="mt-3 mb-0">Already have an account? <a href="{% url 'loginview' %}" class="returning-link">Log in here.</a></p>
+    </section>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function(){
+    const root = document.documentElement;
+    const vh = () => window.innerHeight || 1;
+    const clamp = (n,min,max)=> Math.max(min, Math.min(max, n));
+    const c01 = (x)=> clamp(x,0,1);
+
+    let stageStart = 0;
+    let stageEnd = 1;
+
+    function readVar(name, fb){
+      const v = getComputedStyle(root).getPropertyValue(name).trim();
+      const m = v.match(/([-+]?\d*\.?\d+)/);
+      return m ? parseFloat(m[1]) : fb;
+    }
+
+    function setContentVH(){
+      const topVh = readVar('--safe-top-vh', 8);
+      const botVh = readVar('--safe-bottom-vh', 14);
+      const content = clamp(100 - topVh - botVh, 40, 92);
+      root.style.setProperty('--content-vh', String(content));
+    }
+
+    function sizeHeroToLogo(){
+      const logo = document.querySelector('.logo-container');
+      if(!logo) return;
+
+      const contentPx = vh() * (readVar('--content-vh',80)/100);
+      const r = logo.getBoundingClientRect();
+      const endScale = 0.82;
+
+      const startCvhNeed = Math.ceil(((r.height + 40) / contentPx) * 100);
+      const endCvhNeed   = Math.ceil(((r.height * endScale + 36) / contentPx) * 100);
+
+      const endCvh       = clamp(endCvhNeed, 40, 58);
+      const startFinal   = clamp(Math.max(startCvhNeed, endCvh + 10), 64, 82);
+
+      root.style.setProperty('--hero-start-cvh', String(startFinal));
+      root.style.setProperty('--hero-end-cvh',   String(endCvh));
+    }
+
+    function computeStageBounds(){
+      const stage = document.querySelector('.landing-stage');
+      if (!stage) return;
+
+      const rect = stage.getBoundingClientRect();
+      const scrollTop = window.scrollY || window.pageYOffset;
+
+      stageStart = rect.top + scrollTop;
+      stageEnd = stageStart + stage.offsetHeight - vh();
+    }
+
+    function updateProgress(){
+      const stage = document.querySelector('.landing-stage');
+      if (!stage) return;
+
+      const scrollTop = window.scrollY || window.pageYOffset;
+      const span = Math.max(stageEnd - stageStart, 1);
+      const t = c01((scrollTop - stageStart) / span);
+
+      const pHero  = c01( t / 0.33 );
+      const pCards = c01( (t - 0.33) / 0.33 );
+      const pCta   = c01( (t - 0.66) / 0.34 );
+
+      root.style.setProperty('--p-hero',  String(pHero));
+      root.style.setProperty('--p-cards', String(pCards));
+      root.style.setProperty('--p-cta',   String(pCta));
+
+      root.style.setProperty('--footer-p', String(pCta));
+    }
+
+    function layout(){
+      setContentVH();
+      sizeHeroToLogo();
+      computeStageBounds();
+      updateProgress();
+    }
+
+    window.addEventListener('resize', layout);
+    window.addEventListener('scroll', updateProgress, { passive:true });
+    document.addEventListener('DOMContentLoaded', layout);
+    layout();
+  })();
+</script>
+{% endblock %}

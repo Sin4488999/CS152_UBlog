@@ -1,177 +1,228 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Sign Up</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-      crossorigin="anonymous"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
-      integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
-      crossorigin="anonymous"
-    />
+{% extends "main_app/layouts/base.html" %}
+{% load static %}
 
-    <style>
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        background: #7abecc !important;
-      }
-      .user_card {
-        width: 350px;
-        margin-top: auto;
-        margin-bottom: auto;
-        background: #74cfbf;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        margin-top: 150px;
-        flex-direction: column;
-        padding: 10px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-          0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-          0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-          0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        border-radius: 5px;
-      }
+{% block title %}Sign up • UBlog{% endblock %}
+{% block body_class %}auth-page{% endblock %}
 
-      .form_container {
-        margin-top: 20px;
-      }
+{% block page_css %}
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
 
-      #form-title {
-        color: #fff;
-      }
-      .login_btn {
-        width: 100%;
-        background: #33ccff !important;
-        color: white !important;
-      }
-      .login_btn:focus {
-        box-shadow: none !important;
-        outline: 0px !important;
-      }
-      .login_container {
-        padding: 0 2rem;
-      }
-      .input-group-text {
-        background: #f7ba5b !important;
-        color: white !important;
-        border: 0 !important;
-        border-radius: 0.25rem 0 0 0.25rem !important;
-      }
-      .input_user,
-      .input_pass:focus {
-        box-shadow: none !important;
-        outline: 0px !important;
-      }
-      #messages {
-        background-color: grey;
-        color: #fff;
-        padding: 10px;
-        margin-top: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    {% extends "main_app/base.html" %} {% block content %}
-    <div class="container h-100">
-      <div class="d-flex justify-content-center h-100">
-        <div class="user_card">
-          <div class="d-flex justify-content-center">
-            <h3 id="form-title">REGISTER ACCOUNT</h3>
-          </div>
-          <div class="d-flex justify-content-center form_container">
-            <form method="POST" action="">
-              {% csrf_token %}
-              <div class="input-group mb-2">
-                <div class="input-group-append">
-                  <span class="input-group-text"
-                    ><i class="fas fa-user"></i
-                  ></span>
-                </div>
-                {{ form.username }}
-              </div>
-              <div class="input-group mb-2">
-                <div class="input-group-append">
-                  <span class="input-group-text"
-                    ><i class="fas fa-envelope-square"></i
-                  ></span>
-                </div>
-                {{ form.email }}
-              </div>
+{% block content %}
+<div class="auth-shell">
+  <!-- Left: logo + tagline -->
+  <div class="auth-brand-panel">
+    <h1 class="auth-logo-wordmark">UBlog</h1>
+    <p class="auth-tagline">
+      Join a community of writers and readers. Create posts, follow authors,
+      and build your own corner of the internet.
+    </p>
+  </div>
 
-              <div class="input-group mb-2">
-                <div class="input-group-append">
-                  <span class="input-group-text"
-                    ><i class="fas fa-key"></i
-                  ></span>
-                </div>
-                {{ form.password1 }}
-              </div>
-              <div class="input-group mb-2">
-                <div class="input-group-append">
-                  <span class="input-group-text"
-                    ><i class="fas fa-key"></i
-                  ></span>
-                </div>
-                {{ form.password2 }}
-              </div>
+  <!-- Right: signup card -->
+  <div class="auth-card">
+    <form method="POST" action="">
+      {% csrf_token %}
+      <h2 class="auth-card-title">Create a new account</h2>
 
-              <div class="d-flex justify-content-center mt-3 login_container">
-                <input
-                  class="btn login_btn"
-                  type="submit"
-                  value="Register Account"
-                />
-              </div>
-            </form>
-          </div>
-          {% for message in messages %}
-          <p id="messages">{{message}}</p>
-          {% endfor %}
-          <div class="mt-4">
-            <div class="d-flex justify-content-center links">
-              Already have an account?
-              <a href="{% url 'loginview' %}" class="ml-2">Login</a>
-            </div>
-          </div>
+      <!-- Username -->
+      <div class="form-group">
+        <label for="id_username">Username</label>
+        <input
+          id="id_username"
+          type="text"
+          name="username"
+          placeholder="Choose a username"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="id_email">Email</label>
+        <input
+          id="id_email"
+          type="email"
+          name="email"
+          placeholder="Enter your email"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="id_password1">Password</label>
+        <div class="auth-password-wrapper">
+          <input
+            id="id_password1"
+            type="password"
+            name="password1"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            required
+          />
+          <button
+            type="button"
+            class="auth-password-toggle"
+            data-toggle="password"
+            data-target="id_password1"
+            aria-label="Show password"
+          >
+            <span class="auth-password-eye" aria-hidden="true">👁</span>
+          </button>
+        </div>
+        <div class="auth-password-hint">
+          <ul class="auth-password-rules">
+            <li data-rule="length" class="is-invalid">At least 8 characters</li>
+            <li data-rule="number" class="is-invalid">Contains a number</li>
+            <li data-rule="capital" class="is-invalid">Contains a capital letter</li>
+            <li data-rule="special" class="is-invalid">Contains a special character</li>
+            <li data-rule="match" class="is-invalid">Passwords match</li>
+          </ul>
         </div>
       </div>
-    </div>
-    <script>
-      /* Because i didnt set placeholder values in forms.py they will be set here using vanilla Javascript
-		//We start indexing at one because CSRF_token is considered and input field 
-		 */
 
-      //Query All input fields
-      // var form_fields = document.getElementsByTagName("input");
-      // form_fields[1].placeholder = "Username..";
-      // form_fields[2].placeholder = "Email..";
-      // form_fields[3].placeholder = "Enter password...";
-      // form_fields[4].placeholder = "Re-enter Password...";
-      document.getElementsByName("username")[0].placeholder =
-        "Enter your username...";
-      document.getElementsByName("email")[0].placeholder =
-        "Enter your email...";
-      document.getElementsByName("password1")[0].placeholder =
-        "Enter your password...";
-      document.getElementsByName("password2")[0].placeholder =
-        "Re-enter your password...";
+      <!-- Confirm password -->
+      <div class="form-group">
+        <label for="id_password2">Confirm password</label>
+        <div class="auth-password-wrapper">
+          <input
+            id="id_password2"
+            type="password"
+            name="password2"
+            placeholder="Re-enter your password"
+            autocomplete="new-password"
+            required
+          />
+          <button
+            type="button"
+            class="auth-password-toggle"
+            data-toggle="password"
+            data-target="id_password2"
+            aria-label="Show password"
+          >
+            <span class="auth-password-eye" aria-hidden="true">👁</span>
+          </button>
+        </div>
+      </div>
 
-      for (var field in form_fields) {
-        form_fields[field].className += " form-control";
+      <!-- Submit -->
+      <button class="btn btn-primary auth-btn-primary" type="submit">
+        Sign up
+      </button>
+
+      <!-- Django messages (form errors, etc.) -->
+      {% if messages %}
+      <div class="auth-messages">
+        {% for message in messages %}
+          <p class="auth-message {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="auth-divider"><span>or</span></div>
+
+      <a href="{% url 'loginview' %}" class="btn auth-btn-secondary">
+        Log in to existing account
+      </a>
+    </form>
+
+    <p class="auth-small-link mt-3 mb-0">
+      <a href="{% url 'homeview' %}">Back to landing</a>
+    </p>
+
+    <p class="auth-small-link mt-2 mb-0">
+      Already signed up but no email? <a href="{% url 'resend_verification' %}">Resend verification</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function(){
+    function setupPasswordToggles(){
+      document.querySelectorAll('[data-toggle="password"]').forEach(function(btn){
+        var targetId = btn.getAttribute('data-target');
+        var input = document.getElementById(targetId);
+        if (!input) return;
+
+        btn.addEventListener('click', function(){
+          var isPassword = input.type === 'password';
+          input.type = isPassword ? 'text' : 'password';
+          btn.classList.toggle('is-visible', isPassword);
+          btn.setAttribute('aria-pressed', String(isPassword));
+        });
+      });
+    }
+
+    function setupPasswordFeedback(){
+      var pwd1 = document.getElementById('id_password1');
+      var pwd2 = document.getElementById('id_password2');
+      var form = pwd1 ? pwd1.form : null;
+      if (!pwd1 || !pwd2 || !form) return;
+
+      var rules = {
+        length: document.querySelector('[data-rule="length"]'),
+        number: document.querySelector('[data-rule="number"]'),
+        capital: document.querySelector('[data-rule="capital"]'),
+        special: document.querySelector('[data-rule="special"]'),
+        match:  document.querySelector('[data-rule="match"]')
+      };
+
+      var lastAllOk = false;
+
+      function applyRule(ruleName, ok){
+        var el = rules[ruleName];
+        if (!el) return;
+        el.classList.toggle('is-valid', ok);
+        el.classList.toggle('is-invalid', !ok);
       }
-    </script>
-    {% endblock %}
-  </body>
-</html>
+
+      function update(){
+        var v1 = pwd1.value || '';
+        var v2 = pwd2.value || '';
+
+        var checks = {
+          length: v1.length >= 8,
+          number: /\d/.test(v1),
+          capital: /[A-Z]/.test(v1),
+          special: /[^A-Za-z0-9]/.test(v1),
+          match: v1.length > 0 && v1 === v2
+        };
+
+        for (var key in checks){
+          applyRule(key, checks[key]);
+        }
+
+        lastAllOk =
+          checks.length &&
+          checks.number &&
+          checks.capital &&
+          checks.special &&
+          checks.match;
+      }
+
+      pwd1.addEventListener('input', update);
+      pwd2.addEventListener('input', update);
+
+      form.addEventListener('submit', function(e){
+        update();
+        if (!lastAllOk){
+          e.preventDefault();
+          pwd1.focus();
+        }
+      });
+
+      update();
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      setupPasswordToggles();
+      setupPasswordFeedback();
+    });
+  })();
+</script>
+{% endblock %}

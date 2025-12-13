@@ -1,0 +1,68 @@
+<!-- path: templates/main_app/partials/comment_item.html -->
+<!-- Recursive comment item with Reddit-style voting -->
+<li class="comment-item" id="c-{{ node.id }}">
+  <div class="comment-wrapper">
+    <!-- Left voting column -->
+    <div class="comment-vote-column">
+      <form method="post" action="{% url 'add_comment_like' post_id %}" class="vote-form">
+        {% csrf_token %}
+        <input type="hidden" name="comment_id" value="{{ node.id }}">
+        <input type="hidden" name="next" value="{{ request.get_full_path }}#c-{{ node.id }}">
+        <button type="submit" name="comment_like" value="1"
+                class="vote-btn vote-btn-small upvote{% if node.user_liked %} is-active{% endif %}"
+                aria-label="Upvote comment">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+      </form>
+
+      <span class="vote-score vote-score-small{% if node.score > 0 %} positive{% elif node.score < 0 %} negative{% endif %}">
+        {{ node.score }}
+      </span>
+
+      <form method="post" action="{% url 'add_comment_like' post_id %}" class="vote-form">
+        {% csrf_token %}
+        <input type="hidden" name="comment_id" value="{{ node.id }}">
+        <input type="hidden" name="next" value="{{ request.get_full_path }}#c-{{ node.id }}">
+        <button type="submit" name="comment_downvote" value="1"
+                class="vote-btn vote-btn-small downvote{% if node.user_downvoted %} is-active{% endif %}"
+                aria-label="Downvote comment">
+          <i class="fa-solid fa-arrow-down"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Right content column -->
+    <div class="comment-content-column">
+      <div class="comment-meta">
+        <span class="comment-author">@{{ node.user.username }}</span>
+        <span class="post-dot">•</span>
+        <time class="comment-time">{{ node.published_date|date:"M j, Y" }}</time>
+      </div>
+
+      <div class="comment-body">{{ node.content }}</div>
+
+      <div class="comment-actions">
+        {% if request.user.is_authenticated %}
+        <button type="button"
+                class="comment-action-reply"
+                data-reply-id="{{ node.id }}"
+                data-reply-handle="@{{ node.user.username }} ">
+          <i class="fa-solid fa-reply"></i> Reply
+        </button>
+        {% endif %}
+      </div>
+
+      <!-- Reply slot for inline form -->
+      <div id="reply-slot-{{ node.id }}" class="reply-slot"></div>
+
+      <!-- Nested replies -->
+      {% if node.children.exists %}
+        <ul class="comment-children">
+          {% for child in node.children.all %}
+            {% include "main_app/partials/comment_item.html" with node=child post_id=post_id %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</li>

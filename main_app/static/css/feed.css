@@ -1,0 +1,788 @@
+/* === Layout variables === */
+:root{
+  --left-w: 260px;          /* 56px when collapsed */
+  --right-w: 320px;
+  --main-max: 880px;        /* wider posts like Reddit */
+  --vote-orange: #ff4500;
+  --vote-blue: #0079d3;
+}
+
+/* === Outer shell: sidebar | centered content === */
+.feed-shell{
+  display: grid;
+  grid-template-columns: var(--left-w) 1fr;
+  width: 100%;
+  margin: 0;
+  gap: 0;
+}
+
+/* Collapse: slim left */
+.feed-shell.is-collapsed{ --left-w: 56px; }
+
+/* === Left rail === */
+.feed-left{
+  position: sticky;
+  top: var(--safe-top);
+  height: calc(100vh - var(--safe-top) - var(--safe-bottom));
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-left: none;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 10px 8px;
+}
+
+.left-header{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.left-toggle{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:34px; height:32px; background:#fff; border:1px solid var(--card-border);
+  border-radius:8px; font-size:16px; line-height:1; transition: transform .15s ease;
+  cursor: pointer;
+}
+.left-toggle:hover{ transform: translateY(-1px); }
+.left-title{ font-weight:700; letter-spacing:.02em; }
+
+.left-nav{
+  display:flex; flex-direction:column; gap:4px;
+  overflow:auto; height: calc(100% - 40px); padding-right: 4px;
+}
+.left-section-label{ margin:8px 6px 4px; font-size:.8rem; color:#475569; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.left-link{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px; border-radius:8px; color: var(--text); text-decoration:none;
+  transition: background-color .15s ease, transform .15s ease;
+}
+.left-link:hover{ background:#f1f5f9; transform: translateY(-1px); }
+.left-ico{ width:20px; text-align:center; font-size:16px; color:#0f172a; }
+.left-text{ white-space:nowrap; }
+
+.feed-shell.is-collapsed .left-title{ display:none; }
+.feed-shell.is-collapsed .left-text{ display:none; }
+.feed-shell.is-collapsed .left-link{ gap:8px; padding:8px 6px; justify-content:flex-start; }
+.feed-shell.is-collapsed .left-ico{ width:auto; margin-left:2px; }
+
+/* === Center container: posts + actions sidebar === */
+.feed-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px;
+  padding: 24px 32px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* Main posts - wider, centered */
+.feed-main{
+  flex: 1 1 var(--main-max);
+  max-width: var(--main-max);
+  width: 100%;
+}
+
+/* Actions sidebar - fixed width, flush right */
+.feed-right{
+  flex: 0 0 var(--right-w);
+  width: var(--right-w);
+  position: sticky;
+  top: calc(var(--safe-top) + 24px);
+  height: fit-content;
+  max-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 48px);
+  overflow-y: auto;
+}
+
+.right-card{
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.right-title{ font-weight:700; margin-bottom:14px; font-size: 1rem; }
+.right-hint{ color:#475569; font-size:.9rem; }
+
+/* === POST CARDS - UNIFIED ACROSS ALL VIEWS === */
+.post-card{
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  min-height: 140px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  display: flex;
+  gap: 16px;
+}
+
+.post-card:hover{
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+/* Left voting column - Reddit style */
+.post-vote-column {
+  flex: 0 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.vote-form {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.vote-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #878a8c;
+  transition: color 0.15s ease, transform 0.1s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.vote-btn:hover {
+  background: #f6f7f8;
+}
+
+.vote-btn i {
+  font-size: 24px;
+}
+
+/* Upvote states */
+.vote-btn.upvote:hover {
+  color: var(--vote-orange);
+}
+
+.vote-btn.upvote.is-active {
+  color: var(--vote-orange);
+}
+
+/* Downvote states */
+.vote-btn.downvote:hover {
+  color: var(--vote-blue);
+}
+
+.vote-btn.downvote.is-active {
+  color: var(--vote-blue);
+}
+
+.vote-score {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1c1c1c;
+  min-width: 32px;
+  text-align: center;
+  padding: 2px 0;
+}
+
+.vote-score.positive {
+  color: var(--vote-orange);
+}
+
+.vote-score.negative {
+  color: var(--vote-blue);
+}
+
+/* Right content column */
+.post-content-column {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-head{ margin-bottom:10px; }
+.post-meta{
+  color:#64748b;
+  font-size:.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.post-author{
+  font-weight: 600;
+  color: #475569;
+}
+.post-dot{ margin: 0 .4rem; color:#94a3b8; }
+.post-time{ color: #94a3b8; }
+
+.post-title{
+  display:block;
+  font-weight:700;
+  font-size: 1.375rem;
+  line-height: 1.3;
+  color:var(--text);
+  margin-bottom:12px;
+  margin-top: 8px;
+}
+
+.post-title a{
+  color: inherit;
+  text-decoration: none;
+}
+
+.post-title:hover,
+.post-title a:hover{
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+/* Post body - truncate on list views only */
+.post-body{
+  color:#1f2937;
+  font-size: 1rem;
+  line-height: 1.65;
+  margin-bottom: 16px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Truncation for list views (postlist.html and search.html) */
+.post-card:not(.post-detail) .post-body {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 6.6em;
+}
+
+/* Full content for detail view (postdetail.html) */
+.post-card.post-detail .post-body {
+  display: block;
+  -webkit-line-clamp: unset;
+  max-height: none;
+}
+
+.post-toolbar{
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.tool-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  color:#334155;
+  border-radius:4px;
+  padding:6px 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tool-chip:hover {
+  background: #e8eaed;
+  border-color: #d5d7da;
+}
+
+.tool-chip i{ font-size:16px; }
+
+.tool-action{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color: #878a8c;
+  text-decoration:none;
+  padding:6px 10px;
+  background:none;
+  border:0;
+  cursor:pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.tool-action:hover{
+  background: #f6f7f8;
+}
+
+.tool-action i {
+  font-size: 16px;
+}
+
+/* === Responsive === */
+@media (max-width: 1600px){
+  :root{ --main-max: 800px; }
+}
+
+@media (max-width: 1400px){
+  .feed-center {
+    padding: 20px 24px;
+    gap: 24px;
+  }
+  :root{ --main-max: 720px; }
+}
+
+@media (max-width: 1200px){
+  :root{ --right-w: 300px; --main-max: 660px; }
+  .feed-center {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 992px){
+  /* hide actions sidebar on tablet */
+  .feed-right{ display:none; }
+  .feed-center {
+    justify-content: center;
+  }
+  .feed-main {
+    max-width: 760px;
+  }
+}
+
+@media (max-width: 768px){
+  /* hide left sidebar, full width posts */
+  .feed-shell{
+    grid-template-columns: 1fr;
+  }
+  .feed-left{ display:none; }
+  .feed-center {
+    padding: 16px;
+  }
+  .feed-main {
+    max-width: 100%;
+  }
+  .post-card {
+    padding: 18px;
+    min-height: 120px;
+    gap: 12px;
+  }
+  .post-title {
+    font-size: 1.25rem;
+  }
+  .post-vote-column {
+    flex: 0 0 36px;
+  }
+  .vote-btn i {
+    font-size: 20px;
+  }
+}
+
+/* Comment UI */
+.comment-card{
+  margin-top:16px;
+  min-height: auto !important;
+  display: block !important;
+  padding: 20px 24px !important;
+}
+
+.comment-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--card-border);
+}
+
+.comment-header h3{ margin:0; font-weight:700; font-size:1.125rem; }
+.comment-meta-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:.9rem;
+  color:#334155;
+  font-weight: 500;
+}
+
+.comment-form{ margin-top:12px; margin-bottom: 20px; }
+.comment-form textarea{
+  width:100%; min-height:80px; resize:vertical;
+  border:1px solid var(--card-border); border-radius:8px; padding:10px 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.comment-form .btn{ margin-top:10px; }
+.comment-empty{ color:#64748b; margin:12px 0; text-align: center; font-size: 0.95rem; }
+
+.comment-thread{ list-style:none; margin:0; padding:0; }
+.comment-item{ padding:12px 0; border-top:1px solid #e5e7eb; }
+
+/* Comment wrapper with voting */
+.comment-wrapper {
+  display: flex;
+  gap: 12px;
+}
+
+/* Comment voting column - smaller version of post voting */
+.comment-vote-column {
+  flex: 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding-top: 2px;
+}
+
+.vote-btn-small {
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+}
+
+.vote-btn-small i {
+  font-size: 16px;
+}
+
+.vote-score-small {
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+  padding: 1px 0;
+}
+
+/* Comment content column */
+.comment-content-column {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-meta{
+  color:#64748b;
+  font-size:.85rem;
+  margin-bottom:8px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: #475569;
+}
+
+.comment-time {
+  color: #94a3b8;
+}
+
+.comment-body{
+  white-space:pre-wrap;
+  line-height: 1.6;
+  color: #1f2937;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.comment-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:8px;
+}
+
+.comment-action-reply{
+  background:none;
+  border:0;
+  color:var(--link);
+  padding:4px 8px;
+  cursor:pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s ease;
+}
+
+.comment-action-reply:hover{
+  background: #f6f7f8;
+}
+
+.comment-children{
+  list-style:none;
+  margin:12px 0 0 0;
+  padding-left:20px;
+  border-left:2px solid #e5e7eb;
+}
+
+.reply-slot{ margin-top:10px; }
+.reply-form textarea{
+  width:100%; min-height:64px; resize:vertical;
+  border:1px solid var(--card-border); border-radius:8px; padding:8px 10px;
+  font-size: 0.9rem;
+}
+.reply-actions{ margin-top:8px; display:flex; gap:8px; align-items:center; }
+.btn-sm{ padding:.3rem .6rem; font-size:.875rem; }
+.btn-link{ background:none; border:0; color:var(--link); }
+.btn-link:hover{ color:var(--link-hover); text-decoration:underline; }
+
+/* Screen reader only */
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* Ensure postdetail cards stay the same width as list cards */
+.feed-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Add/Edit Post layout improvements */
+.post-card {
+  padding: 1.5rem 2rem;
+}
+
+.form-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.post-form input[type="text"],
+.post-form textarea {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.post-form textarea {
+  min-height: 200px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Add/Edit post card: vertical layout instead of the default flex row */
+.post-card.post-form-card{
+  display:block;               /* overrides .post-card{display:flex;}  */
+  padding:24px 28px;
+}
+
+/* Heading spacing */
+.post-card.post-form-card .form-heading{
+  font-size:1.25rem;
+  font-weight:700;
+  margin:0 0 1rem 0;
+}
+
+/* Form layout inside the card */
+.post-form{
+  display:flex;
+  flex-direction:column;
+  gap:0.9rem;
+}
+
+/* Tidy up Django's {{ form.as_p }} output */
+.post-form p{
+  margin:0 0 0.75rem 0;
+}
+
+/* Labels above inputs */
+.post-form label{
+  display:block;
+  font-weight:600;
+  margin-bottom:0.25rem;
+}
+
+/* Make title + content inputs fill the card width */
+.post-form input[type="text"],
+.post-form textarea{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+/* Slightly taller content box */
+.post-form textarea{
+  min-height:200px;
+}
+
+/* Buttons row */
+.post-form .form-actions{
+  margin-top:0.5rem;
+  display:flex;
+  gap:0.75rem;
+}
+
+/* === User profile card (center column, where posts usually are) === */
+.profile-card{
+  display: block;              /* override .post-card's flex row */
+  padding: 24px 28px;
+}
+
+.profile-header{
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.profile-avatar{
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  background: #00ccff;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.profile-name{
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.profile-username{
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.profile-email{
+  margin: 4px 0 0 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.profile-bio{
+  margin-top: 12px;
+}
+
+.profile-section-title{
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+}
+
+.profile-history{
+  margin-top: 12px;
+}
+
+.profile-stats{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-stat{
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  min-width: 90px;
+}
+
+.profile-stat-label{
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.profile-stat-value{
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.profile-actions{
+  margin-top: 20px;
+}
+
+
+/* Shared profile card layout (used by profile view + update form) */
+.profile-card{
+  display: block;              /* override .post-card flex-row */
+  padding: 24px 28px;
+}
+
+.profile-name{
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+/* Form inside profile card */
+.profile-form{
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.profile-form p{
+  margin: 0 0 0.75rem 0;
+}
+
+.profile-form label{
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="email"],
+.profile-form input[type="file"],
+.profile-form textarea,
+.profile-form select{
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+.profile-form textarea{
+  min-height: 160px;
+  resize: vertical;
+}
+
+.profile-actions{
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.75rem;
+}

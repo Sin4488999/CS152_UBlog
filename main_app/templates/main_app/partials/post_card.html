@@ -1,0 +1,68 @@
+<!-- path: templates/main_app/partials/post_card.html -->
+<article class="post-card{% if is_detail %} post-detail{% endif %}" id="post-{{ post.pk }}">
+  <!-- Left voting column - Reddit style -->
+  <div class="post-vote-column">
+    <form method="post" action="{% url 'add_comment_like' post.pk %}" class="vote-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button type="submit" name="like_button" value="1"
+              class="vote-btn upvote{% if post.user_liked %} is-active{% endif %}"
+              aria-label="Upvote"
+              title="{% if post.user_liked %}Remove upvote{% else %}Upvote{% endif %}">
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
+    </form>
+
+    <span class="vote-score{% if score > 0 %} positive{% elif score < 0 %} negative{% endif %}">
+      {{ score|default:0 }}
+    </span>
+
+    <form method="post" action="{% url 'add_comment_like' post.pk %}" class="vote-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button type="submit" name="downvote_button" value="1"
+              class="vote-btn downvote{% if post.user_downvoted %} is-active{% endif %}"
+              aria-label="Downvote"
+              title="{% if post.user_downvoted %}Remove downvote{% else %}Downvote{% endif %}">
+        <i class="fa-solid fa-arrow-down"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- Right content column -->
+  <div class="post-content-column">
+    <header class="post-head">
+      <div class="post-meta">
+        <span class="post-author">@{{ post.author.username }}</span>
+        <span class="post-dot">•</span>
+        <time class="post-time">{{ post.published_date|date:"M j, Y" }}</time>
+      </div>
+
+      {% if is_detail %}
+        <h1 class="post-title">{{ post.title }}</h1>
+      {% else %}
+        <h3 class="post-title">
+          <a href="{% url 'postdetailview' post.pk %}">{{ post.title }}</a>
+        </h3>
+      {% endif %}
+    </header>
+
+    {% if post.content %}
+    <div class="post-body">{{ post.content|linebreaksbr }}</div>
+    {% endif %}
+
+    <footer class="post-toolbar">
+      <a class="tool-chip" href="{% url 'postdetailview' post.pk %}#comments">
+        <i class="fa-regular fa-message"></i>
+        <span>{{ post.comments.count }} comment{{ post.comments.count|pluralize }}</span>
+      </a>
+
+      <button type="button" class="tool-action tool-share"
+              data-path="{% url 'postdetailview' post.pk %}"
+              data-title="{{ post.title }}">
+        <i class="fa-solid fa-share"></i>
+        <span>Share</span>
+      </button>
+    </footer>
+  </div>
+</article>

@@ -1,0 +1,41 @@
+{% extends "main_app/layouts/base.html" %}
+{% load static %}
+
+{% block title %}Resend verification • UBlog{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/auth.css' %}">{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-brand-panel">
+    <h1 class="auth-logo-wordmark">UBlog</h1>
+    <p class="auth-tagline">We'll send a fresh verification link if an account exists.</p>
+  </div>
+
+  <div class="auth-card">
+    <form method="POST" action="">
+      {% csrf_token %}
+      <h2 class="auth-card-title">Resend verification</h2>
+
+      <div class="form-group">
+        <label for="id_identifier">Email or username</label>
+        <input id="id_identifier" type="text" name="identifier" placeholder="Email or username" required />
+      </div>
+
+      <button class="btn btn-primary auth-btn-primary" type="submit">Send link</button>
+
+      {% if messages %}
+        <div class="auth-messages">
+          {% for message in messages %}
+            <p class="auth-message {{ message.tags }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <p class="auth-small-link mt-3 mb-0">
+        <a href="{% url 'loginview' %}">Back to login</a>
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

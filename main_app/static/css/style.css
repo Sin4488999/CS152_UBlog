@@ -1,0 +1,159 @@
+:root{
+  --bg:#f8f9fa; --text:#111827;
+  --primary:#00c5ff; --primary-text:#ffffff;
+  --navbar-bg:var(--primary); --navbar-border:#009fcc;
+  --card-bg:#ffffff; --card-border:#e0e0e0;
+  --link:#0ea5e9; --link-hover:#0284c7;
+  --auth-bg:#7abecc;
+  --font-sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+
+  /* Safe areas in px (used for layout padding). Updated from base template JS. */
+  --safe-top:64px;
+  --safe-bottom:72px;
+
+  /* Safe areas as % of viewport height (unitless, 0–100) used by the landing stage math. */
+  --safe-top-vh:8;
+  --safe-bottom-vh:14;
+
+  /* Footer animation state (normalized 0..1; 0 = hidden, 1 = fully visible). */
+  --footer-p:1;
+}
+
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans);}
+a{color:var(--link);text-decoration:none;} a:hover{color:var(--link-hover);}
+
+/* Content is offset by measured safe areas so fixed bars never overlap. */
+.page-wrapper{
+  min-height:100vh;
+  padding-top:var(--safe-top);
+  padding-bottom:var(--safe-bottom);
+}
+
+/* Top bar */
+.navbar-custom{
+  position:fixed;
+  top:0; left:0; right:0;
+  display:flex; align-items:center;
+  z-index:1000;
+  background:var(--navbar-bg)!important;
+  border-bottom:1px solid var(--navbar-border);
+  padding-inline:1.25rem;
+}
+
+.navbar-custom .navbar-brand{
+  color:var(--primary-text)!important;
+  font-weight:700;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  font-size:.98rem;
+}
+
+.navbar-custom .navbar-nav{
+  align-items:center;
+}
+
+/* Nav links */
+.navbar-custom .nav-link{
+  position:relative;
+  color:var(--primary-text)!important;
+  font-weight:600;
+  font-size:.9rem;
+  padding:.35rem .9rem;
+  border-radius:999px;
+  margin-left:.2rem;
+  transition:
+    background-color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link:focus-visible{
+  background:rgba(255,255,255,.18);
+  box-shadow:0 0 0 1px rgba(255,255,255,.3);
+  transform:translateY(-1px);
+  text-decoration:none;
+}
+
+/* Search input */
+.navbar-custom .navbar-search{
+  display:flex;
+  align-items:center;
+  margin-left:.75rem;
+}
+
+#search-input{
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.55);
+  background:rgba(255,255,255,.92);
+  padding:.35rem 1rem;
+  padding-right:1.1rem;
+  font-size:.85rem;
+  min-width:0;
+  width:clamp(140px,18vw,220px);
+  box-shadow:0 0 0 1px rgba(0,0,0,.02);
+  transition:
+    width .18s ease,
+    box-shadow .18s ease,
+    background-color .18s ease,
+    border-color .18s ease;
+}
+#search-input::placeholder{
+  color:rgba(15,23,42,.58);
+}
+#search-input:focus{
+  outline:none;
+  width:clamp(180px,22vw,260px);
+  background:#ffffff;
+  border-color:rgba(255,255,255,.9);
+  box-shadow:0 0 0 1px rgba(0,0,0,.06),0 8px 18px rgba(0,0,0,.14);
+}
+
+/* Footer */
+.site-footer{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--navbar-bg);
+  color: var(--primary-text);
+  border-top: 1px solid var(--navbar-border);
+  padding: 12px 16px;
+  z-index: 1000;
+
+  /* Reveal controlled by a normalized progress variable (0 hidden → 1 shown). */
+  transform: translateY(calc((1 - var(--footer-p)) * 100%));
+  opacity: var(--footer-p);
+  transition: transform .25s ease, opacity .25s ease;
+}
+
+.site-footer .footer-content{
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Debug overlay */
+.debug-overlay{
+  position:fixed;inset:0;pointer-events:none;z-index:9999;display:none
+}
+body.debug-on .debug-overlay{display:block}
+.debug-overlay .safe-top,.debug-overlay .safe-bottom{
+  position:fixed;left:0;right:0;
+  background:rgba(0,200,255,.08);
+  outline:1px dashed rgba(0,180,240,.55)
+}
+.debug-overlay .safe-top{top:0;height:var(--safe-top)}
+.debug-overlay .safe-bottom{bottom:0;height:var(--safe-bottom)}
+.debug-overlay .content-window{
+  position:fixed;left:50%;transform:translateX(-50%);
+  top:var(--safe-top);
+  height:calc(100vh - var(--safe-top) - var(--safe-bottom));
+  width:min(1200px,100vw);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.15);
+  border-radius:10px
+}
+.debug-overlay .badge{
+  position:fixed;bottom:8px;left:8px;
+  background:rgba(0,0,0,.6);color:#fff;border-radius:8px;
+  font:600 12px/1 var(--font-sans);padding:6px 8px;letter-spacing:.03em
+}

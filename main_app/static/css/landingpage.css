@@ -1,0 +1,242 @@
+:root{
+  /* Effective middle window height (in vh units). Computed from safe zones in JS. */
+  --content-vh: 80;
+
+  /* 0..1 progress (set in JS) */
+  --t:0; --p-hero:0; --p-cards:0; --p-cta:0;
+
+  /* Hero band size (% of middle window) */
+  --hero-start-cvh:62;
+  --hero-end-cvh:38;
+
+  /* Padding-driven rise (layout-safe).
+     Increased values push the whole stack down away from the top bar. */
+  --hero-pad-start: clamp(32px, 4.4vh, 72px);
+  --hero-pad-delta: clamp(24px, 3.8vh, 52px);
+
+  /* Extra breathing room above logo to keep a clear gap from the safe top. */
+  --hero-top-extra: clamp(18px, 2.6vh, 32px);
+
+  /* Stronger separation from cards (padding to avoid margin collapse and clipping).
+     padding-bottom scales with inverse of --p-hero to prevent hero/card collision. */
+  --hero-bottom-min:  clamp(40px, 4.8vh, 60px);
+  --hero-bottom-grow: clamp(40px, 5.4vh, 68px);
+}
+
+/* Tighter stage → snappier scroll */
+.landing-stage{
+  height:110vh;
+  background:var(--bg);
+}
+
+.landing-frame{
+  position:sticky;
+  top:var(--safe-top);
+  height:calc(100vh - var(--safe-top) - var(--safe-bottom));
+  min-height:calc(100vh - var(--safe-top) - var(--safe-bottom));
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:flex-start;
+  max-width:1200px; width:100%; margin:0 auto;
+  gap:clamp(12px,1.4vh,20px);
+}
+
+/* Hero */
+.splash-hero{
+  position:relative;
+  display:flex; justify-content:center; align-items:center;
+
+  padding-top: calc(
+    var(--hero-top-extra) +
+    var(--hero-pad-start) +
+    (1 - var(--p-hero)) * var(--hero-pad-delta)
+  );
+
+  padding-bottom: calc(
+    var(--hero-bottom-min) +
+    (1 - var(--p-hero)) * var(--hero-bottom-grow)
+  );
+
+  height:calc(
+    (var(--content-vh) * 1vh) *
+    ( (var(--hero-start-cvh)/100) -
+      var(--p-hero) * ((var(--hero-start-cvh) - var(--hero-end-cvh))/100)
+    )
+  );
+  transition:height .06s linear;
+}
+
+.logo-container{
+  display:flex; align-items:center; position:relative;
+}
+.logo-core{
+  display:flex; align-items:center;
+  gap:clamp(1rem,2vw,2.2rem);
+  transform: scale(calc(1 - var(--p-hero) * 0.18));
+  transform-origin:center;
+  transition:transform .06s linear;
+}
+.logo-u,.logo-blog{
+  font-size:clamp(6rem,12vw,14rem);
+  font-weight:700;
+}
+.logo-blog-bubble{
+  padding:clamp(.8rem,1.2vw,1.3rem) clamp(1.4rem,2.2vw,2.4rem);
+  border-radius:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+
+/* Tagline */
+.logo-tagline{
+  position:absolute; left:100%;
+  margin-left:clamp(.02rem,.15vw,.2rem);
+  display:flex; flex-direction:column;
+  gap:clamp(.3rem,.8vh,.6rem); justify-content:center;
+  opacity:calc(min(1, var(--p-hero) * 1.7));
+  transform:translateX(calc((1 - var(--p-hero)) * 60px));
+  transition:opacity .12s ease, transform .12s ease;
+}
+.logo-tagline span{
+  font-size:clamp(1.6rem,2.8vw,3rem);
+  font-weight:700;
+  line-height:1.1;
+  color:#000;
+}
+
+/* Scroll hint */
+.scroll-hint{
+  position:absolute;
+  left:50%;
+  bottom:clamp(10px,2vh,18px);
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  font-size:0.85rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:rgba(15,23,42,.72);
+  opacity:calc(1 - min(1, var(--p-hero) * 2));
+  pointer-events:none;
+  transition:opacity .2s ease;
+}
+.scroll-hint-label{
+  font-weight:600;
+}
+.scroll-hint-icon{
+  font-size:1.15rem;
+  line-height:1;
+  animation:scroll-hint-bounce 1.4s ease-in-out infinite;
+}
+
+@keyframes scroll-hint-bounce{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(6px); }
+}
+
+/* Features */
+.features-section{
+  padding:0 !important;
+  opacity:var(--p-cards);
+  transform:translateY(calc((1 - var(--p-cards)) * 2vh));
+  transition:opacity .12s ease, transform .12s ease;
+}
+.features-section .row{
+  max-width:1200px;
+  width:100%;
+  margin:0 auto;
+}
+.features-section .col-md-4{
+  flex:0 0 auto;
+  width:clamp(420px,46%,560px);
+}
+.feature-card .mb-2{display:none;}
+.feature-card{
+  background:var(--card-bg);
+  border-radius:14px;
+  padding:clamp(40px,4.5vh,52px) clamp(36px,3.5vw,44px);
+  min-height:clamp(320px,34vh,400px);
+  box-shadow:0 6px 18px rgba(0,0,0,.07);
+  transition:.25s ease;
+}
+.feature-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 14px 36px rgba(0,0,0,.1);
+}
+.feature-card h4{
+  font-size:clamp(2.3rem,4.2vw,2.9rem);
+  margin:.5rem 0 1.1rem;
+}
+.feature-card p{
+  font-size:clamp(1.28rem,2.1vw,1.44rem);
+  line-height:1.95;
+  margin:0 auto;
+  max-width:42ch;
+}
+
+/* CTA */
+.cta-section{
+  min-height:26vh;
+  text-align:center;
+  opacity:var(--p-cta);
+  transform:translateY(calc((1 - var(--p-cta)) * 2.2vh));
+  transition:opacity .14s ease, transform .14s ease;
+}
+.cta-section h5{
+  font-size:clamp(2.6rem, 5vw, 3.6rem);
+  font-weight:800;
+  margin-bottom:1rem;
+}
+
+.cta-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:.75rem;
+}
+
+.cta-section .btn{
+  padding:1.15rem 3.2rem;
+  font-size:1.08rem;
+  font-weight:800;
+  border-radius:999px;
+}
+.cta-section .cta-guest-btn{
+  padding:1.05rem 2.6rem;
+}
+.cta-section p{
+  font-size:clamp(1.02rem,1.45vw,1.14rem);
+}
+
+/* Height-constrained viewports */
+@media (max-height:900px){
+  .cta-section{min-height:28vh}
+}
+@media (max-height:780px){
+  .cta-section{min-height:30vh}
+}
+@media (max-height:680px){
+  .cta-section{min-height:32vh}
+}
+
+@media (max-width:1200px){
+  .features-section .col-md-4{width:48%;}
+}
+@media (max-width:992px){
+  .features-section .col-md-4{width:48%;max-width:none;}
+  .features-section .col-md-4:last-child{width:100%;margin-top:16px;}
+}
+@media (max-width:768px){
+  .logo-tagline{
+    margin-left:clamp(.2rem,.9vw,.5rem);
+    transform:translateX(calc((1 - var(--p-hero)) * 6vw));
+  }
+  .features-section .col-md-4{width:100%;}
+  .feature-card{min-height:clamp(320px,40vh,460px);}
+}
+
+/* Force 3-column shell and explicit placement */
+.feed-shell { grid-template-columns: var(--left-w) minmax(0, var(--main-max)) var(--right-w) !important; }
+.feed-left  { grid-column: 1; }
+.feed-main  { grid-column: 2; min-width: 0; }
+.feed-right { grid-column: 3; }

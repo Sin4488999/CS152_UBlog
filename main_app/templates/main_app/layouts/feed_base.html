@@ -1,0 +1,77 @@
+<!-- path: templates/main_app/layouts/feed_base.html -->
+{% extends "main_app/layouts/base.html" %}
+{% load static %}
+
+{% block title %}{% block feed_title %}UBlog{% endblock %}{% endblock %}
+
+{% block page_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/feed.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block content %}
+<div class="feed-shell">
+  <aside class="feed-left">
+    {% block feed_left %}
+    <div class="left-header">
+      <button class="left-toggle" type="button"
+              onclick="document.querySelector('.feed-shell').classList.toggle('is-collapsed')"
+              aria-label="Toggle sidebar">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <span class="left-title">Communities</span>
+    </div>
+    <nav class="left-nav">
+      <a class="left-link" href="{% url 'postlistview' %}">
+        <i class="left-ico fa-solid fa-house"></i><span class="left-text">Home</span>
+      </a>
+      <a class="left-link" href="#"><i class="left-ico fa-solid fa-fire"></i><span class="left-text">Popular</span></a>
+      <a class="left-link" href="#"><i class="left-ico fa-regular fa-compass"></i><span class="left-text">Explore</span></a>
+      <div class="left-section-label">Custom feeds</div>
+      <a class="left-link" href="#"><i class="left-ico fa-solid fa-plus"></i><span class="left-text">Create Custom Feed</span></a>
+    </nav>
+    {% endblock %}
+  </aside>
+
+  <div class="feed-center">
+    <main class="feed-main">
+      {% block feed_main %}{% endblock %}
+    </main>
+
+    <aside class="feed-right">
+      {% block feed_actions %}
+      <div class="right-card">
+        <h3 class="right-title">Actions</h3>
+        <a class="btn btn-primary btn-block mb-2" href="{% url 'addpostview' %}">
+          <i class="fa-solid fa-pen-to-square"></i> Create Post
+        </a>
+        <a class="btn btn-outline-secondary btn-block" href="#" aria-disabled="true">
+          <i class="fa-solid fa-people-group"></i> Create Community
+        </a>
+      </div>
+      {% endblock %}
+    </aside>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  <script>
+    // Shared share handler (kept here to avoid duplication)
+    (function(){
+      function shareHandler(e){
+        var btn = e.currentTarget;
+        var path = btn.getAttribute('data-path') || '/';
+        var title = btn.getAttribute('data-title') || document.title;
+        var url = new URL(path, window.location.origin).href;
+        if (navigator.share && window.isSecureContext){ navigator.share({title, url}).catch(function(){}); return; }
+        if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).catch(function(){}); }
+      }
+      document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('.tool-share').forEach(function(b){ b.addEventListener('click', shareHandler); });
+      });
+    })();
+  </script>
+{% endblock %}

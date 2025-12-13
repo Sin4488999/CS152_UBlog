@@ -1,13 +1,32 @@
-{% extends "main_app/base.html" %} {% block title %} {% if form.instance.id %}
-Edit Post {% else %} Add Post {% endif %} {% endblock %} {%block content%}
-<h1>{% if form.instance.id %} Edit Post {% else %} Add Post {% endif %}</h1>
-<div class="form-group" style="padding: 50px 50px">
-  <form method="POST">
-    {% csrf_token %} {{ form.as_p }}
-    <div class="mt-4">
-      <button class="btn btn-primary" type="submit">Confirm</button>
-      <a href="{% url 'postlistview' %}" class="btn btn-secondary"> Cancel </a>
-    </div>
-  </form>
-</div>
+{# path: templates/main_app/addpost.html #}
+{% extends "main_app/layouts/feed_base.html" %}
+{% load static %}
+
+{% block feed_title %}
+  {% if form.instance.id %}Edit Post{% else %}Add Post{% endif %} • UBlog
 {% endblock %}
+
+{% block feed_main %}
+  <div class="feed-column">
+    <div class="post-card post-form-card">
+      <h2 class="form-heading">
+        {% if form.instance.id %}Edit Post{% else %}Create a New Post{% endif %}
+      </h2>
+
+      <form method="POST" class="post-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            {% if form.instance.id %}Save Changes{% else %}Post{% endif %}
+          </button>
+          <a href="{% url 'postlistview' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+
+

@@ -1,23 +1,44 @@
-{% extends "main_app/base.html" %} {% block title %} Search Results {%endblock%}
-{% block content %}
-<div class="container mt-4">
-  <h2>Search Results</h2>
+<!-- path: templates/main_app/search.html -->
+{% extends "main_app/layouts/feed_base.html" %}
+{% load static %}
+
+{% block feed_title %}Search{% if query %}: {{ query }}{% endif %} • UBlog{% endblock %}
+
+{% block feed_main %}
+  <div class="post-card" style="margin-bottom:16px;">
+    <div class="post-content-column">
+      <h2 style="margin:0;">
+        {% if query %}
+          Results for "<span style="font-weight:800">{{ query }}</span>"
+        {% else %}
+          Search
+        {% endif %}
+      </h2>
+      <div class="post-meta" style="margin-top:8px;">
+        {% if query %}
+          {% if results %}
+            {{ results|length }} result{{ results|length|pluralize }}
+          {% else %}
+            No results found
+          {% endif %}
+        {% else %}
+          Type a query in the search bar above.
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
   {% if results %}
-  <ul class="list-group">
     {% for post in results %}
-    <li class="list-group-item">
-      <h4 class="mb-1">{{ post.title }}</h4>
-      <small class="text-muted">{{ post.author }}</small>
-      <p>{{ post.content }}</p>
-      <a
-        href="{% if user.is_authenticated %} {% url 'postdetailview' post.pk %} {% else %} {% url 'loginview' %} {% endif %}"
-        >Read more</a
-      >
-    </li>
+      {% include "main_app/partials/post_card.html" with post=post is_detail=False score=post.vote_score %}
     {% endfor %}
-  </ul>
-  {% else %}
-  <p>No results found.</p>
+  {% elif query %}
+    <div class="post-card">
+      <div class="post-content-column">
+        <p class="comment-empty" style="margin:0;">
+          No results for "{{ query }}".
+        </p>
+      </div>
+    </div>
   {% endif %}
-</div>
 {% endblock %}
